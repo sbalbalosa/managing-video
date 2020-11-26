@@ -1,18 +1,47 @@
-# Movingimage Frontend Developer challenge
+# Solution by Sharlon Balbalosa
 
-## Steps to run the project
-* Install dependencies using either npm or yarn.
-* Run ```npm start``` to start the server (backend) and the app itself.
+### Hi!
 
-## Steps for the challenge
-Please clone this repository and complete the tasks below. Then upload your code to a repository(github etc...) and share the link.
+This is my solution for the project test.  I enjoyed building this application although it is not perfect I was able to complete the required and optional task for this challenge. Below are the details regarding the technology stack, folder structure and missing items.
 
-## Tasks to be completed
-* (Mandatory) Please complete the video.ts (You can find this file in the services folder) file by the interfaces defined.
-* (Optional) Please add page(s) to update an existing video and to add a new video.
-* (Optional)Please comment on how to make this app scalable.
+## Data flow diagram
 
-## Note
-* Material-ui has been used and installed for the starter template. You can add styles if you want or need to.
-* We have included a file that acts as the database (db.json), the way the data is presented there is intentional and should not be changed please.
+![diagram](public/diagram.png)
 
+
+### Instructions on how to run
+* yarn install
+* yarn start
+
+### Implemented functionality
+
+* Application Architecture to handle Authors, Categories and Videos.
+* Create and update new video.
+* Client side sorting for author and video name.
+* Search function (GET request)
+* Handle browser refresh
+* Conditional HTTP request based on config
+
+### Folder structure
+
+* src/components - generic components
+* src/features - components connected with redux and reducer
+* src/services - backend api
+* src/models - pure function for data transformations
+
+### Technology stack used
+
+* TypeScript (I love working with TS)
+* @redux/toolkit for opinionated redux setup
+
+### For improvement(Not Implemented, no more time)
+
+* End to end testing using Cypress.
+* Unit Test.
+* Ingegration Test.
+* Accessibility
+
+I would love to have your feedback regarding the solution. If you have question or if for some reason the app doesn't run please let me know. (sbalbalosa@gmail.com)
+
+Thanks,
+Sharlon Balbalosa
