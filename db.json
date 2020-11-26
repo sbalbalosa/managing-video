@@ -19,135 +19,52 @@
   ],
   "authors": [
     {
+      "id": 1,
       "name": "David Munch",
       "videos": [
         {
-          "name": "Working",
-          "catIds": [
-            2,
-            4
-          ],
-          "id": 1606402345640
+          "id": 1,
+          "catIds": [1, 2],
+          "name": "Set the Moon"
+        },
+        {
+          "id": 2,
+          "catIds": [2, 4],
+          "name": "Lights"
         }
-      ],
-      "id": 1
+      ]
     },
     {
+      "id": 2,
       "name": "Li Sun Chi",
       "videos": [
         {
-          "id": 1606310643267,
-          "name": "Funssssss",
-          "catIds": [
-            4
-          ]
+          "id": 3,
+          "catIds": [4],
+          "name": "Fun"
         },
         {
-          "name": "testingers",
-          "catIds": [
-            2,
-            1,
-            4
-          ],
-          "id": 1606393269564
+          "id": 4,
+          "catIds": [1, 2, 4],
+          "name": "It"
         },
         {
-          "name": "Fun and with",
-          "catIds": [
-            2,
-            3,
-            4
-          ],
-          "id": 1606399987005
-        },
-        {
-          "name": "test",
-          "catIds": [
-            2,
-            1,
-            4,
-            3
-          ],
-          "id": 1606399995376
-        },
-        {
-          "name": "test",
-          "catIds": [
-            2,
-            4
-          ],
-          "id": 1606400010851
-        },
-        {
-          "name": "test",
-          "catIds": [
-            2,
-            1,
-            4
-          ],
-          "id": 1606400024037
-        },
-        {
-          "name": "test",
-          "catIds": [
-            2,
-            4
-          ],
-          "id": 1606400095128
-        },
-        {
-          "name": "test",
-          "catIds": [
-            3,
-            4
-          ],
-          "id": 1606415307563
-        },
-        {
-          "name": "Fun and with",
-          "catIds": [
-            2,
-            4
-          ],
-          "id": 1606415328413
-        },
-        {
-          "name": "test",
-          "catIds": [
-            2,
-            1,
-            4
-          ],
-          "id": 1606428891103
+          "id": 5,
+          "catIds": [2],
+          "name": "Go and get it"
         }
-      ],
-      "id": 2
+      ]
     },
     {
+      "id": 3,
       "name": "Steven Scorsese",
       "videos": [
         {
-          "name": "test",
-          "catIds": [
-            2,
-            1,
-            4,
-            3
-          ],
-          "id": 1606393277735
-        },
-        {
-          "name": "test",
-          "catIds": [
-            2,
-            1,
-            4,
-            3
-          ],
-          "id": 1606400003424
+          "id": 6,
+          "catIds": [2, 4],
+          "name": "Torrance"
         }
-      ],
-      "id": 3
+      ]
     }
   ]
 }

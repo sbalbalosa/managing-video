@@ -36,10 +36,10 @@ This is my solution for the project test.  I enjoyed building this application a
 
 ### For improvement(Not Implemented, no more time)
 
-* End to end testing using Cypress.
-* Unit Test.
-* Ingegration Test.
-* Accessibility
+* End to end testing using Cypress. :(
+* Unit Test. :(
+* Ingegration Test. :(
+* Accessibility :(
 
 I would love to have your feedback regarding the solution. If you have question or if for some reason the app doesn't run please let me know. (sbalbalosa@gmail.com)
 
