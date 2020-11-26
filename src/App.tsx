@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { AppBar, Container, Toolbar, Typography } from '@material-ui/core';
-import { VideosTable } from './components/videos-table';
-import { getVideos } from './services/videos';
-import { Video } from './services/video.interface';
+import { VideosTable } from './features/videos/components/videos-table';
+import { VideoForm } from './features/videos/components/video-form';
+import { Router, RouteComponentProps } from '@reach/router';
 
+const Home = (props: RouteComponentProps) => <VideosTable />;
+const Form = (props: RouteComponentProps) => <VideoForm />;
 const App: React.FC = () => {
-  const [videos, setVideos] = useState<Video[]>([]);
-
-  const handleVideosResponse = (videos: Video[]) => {
-    setVideos(videos);
-  };
-
-  useEffect(() => {
-    getVideos().then(handleVideosResponse);
-  }, []);
   return (
     <>
       <AppBar position="static">
@@ -22,7 +15,12 @@ const App: React.FC = () => {
         </Toolbar>
       </AppBar>
       <Container>
-        <VideosTable videos={videos} />
+        <Router>
+          <Home path="/"></Home>
+          <Home path="videos"></Home>
+          <Form path="videos/:id/:authorId" />
+          <Form path="videos/new" />
+        </Router>
       </Container>
     </>
   );
