@@ -2,6 +2,7 @@ import { createSlice, createEntityAdapter, createAsyncThunk } from '@reduxjs/too
 import { getCategories } from '../../services/categories';
 import { CategoryEntity, CategoryView } from '../../models/category';
 import { RootState } from '../../store';
+import { conditionToReloadData } from '../../lib/utils';
 
 const categoriesAdapter = createEntityAdapter<CategoryEntity>({
   selectId: (entity) => entity.id,
@@ -17,14 +18,7 @@ export const fetchCategories = createAsyncThunk(
   {
     condition: (_, { getState }) => {
       const categoriesState = (getState() as RootState).categories;
-      if (categoriesState.isUpdating) return false;
-      if (categoriesState.lastFetched === -1) return;
-      const currentTimestamp = Date.now();
-      const isExpired = Math.abs(currentTimestamp - categoriesState.lastFetched) / 1000 > 30;
-      if (isExpired) {
-        return;
-      }
-      return false;
+      if (conditionToReloadData(categoriesState) === false) return false;
     },
   }
 );

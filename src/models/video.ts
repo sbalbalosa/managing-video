@@ -12,8 +12,8 @@ export interface VideoResponse {
 export const videoSchema = yup
   .object({
     name: yup.string().required(),
-    catIds: yup.array().min(1).required(),
-    authorId: yup.number().required(),
+    catIds: yup.array().min(1, 'Please at least 1 category').required(),
+    authorId: yup.number().required().typeError('Please select an author'),
   })
   .defined();
 

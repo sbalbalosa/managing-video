@@ -1,7 +1,7 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import videosReducer from './features/videos/videosSlice';
-import authorsReducer from './features/authors/authorsSlice';
-import categoriesReducer from './features/categories/categoriesSlice';
+import videosReducer from './features/videos/videos-slice';
+import authorsReducer from './features/authors/authors-slice';
+import categoriesReducer from './features/categories/categories-slice';
 
 export const store = configureStore({
   reducer: {

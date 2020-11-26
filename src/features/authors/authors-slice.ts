@@ -2,8 +2,8 @@ import { createSlice, createEntityAdapter, createAsyncThunk } from '@reduxjs/too
 
 import { getAuthors, updateAuthor, searchAuthors } from '../../services/authors';
 import { RootState } from '../../store';
-import { videosReceived, videosSelector, videoUpsertMany, videoDelete } from '../videos/videosSlice';
-import { categoriesSelector } from '../categories/categoriesSlice';
+import { videosReceived, videosSelector, videoUpsertMany, videoDelete } from '../videos/videos-slice';
+import { categoriesSelector } from '../categories/categories-slice';
 import {
   AuthorResponse,
   AuthorEntity,
@@ -18,6 +18,7 @@ import {
   updateVideoToAuthorResponse,
 } from '../../models/author';
 import { VideoEntity, transformVideoEntityToResponse } from '../../models/video';
+import { conditionToReloadData } from '../../lib/utils';
 
 const authorsAdapter = createEntityAdapter<AuthorEntity>({
   selectId: (entity) => entity.id,
@@ -44,14 +45,7 @@ export const fetchAuthors = createAsyncThunk(
   {
     condition: (_, { getState }) => {
       const authorsState = (getState() as RootState).authors;
-      if (authorsState.isUpdating) return false;
-      if (authorsState.lastFetched === -1) return;
-      const currentTimestamp = Date.now();
-      const isExpired = Math.abs(currentTimestamp - authorsState.lastFetched) / 1000 > 30;
-      if (isExpired) {
-        return;
-      }
-      return false;
+      if (conditionToReloadData(authorsState) === false) return false;
     },
   }
 );
@@ -75,19 +69,10 @@ export const fetchAuthorsBySearch = createAsyncThunk(
   }
 );
 
-// export const fetchAuthorById = createAsyncThunk(
-//   'authors/fetchById',
-//   async (id: AuthorEntity['id'], thunkApi): Promise<AuthorEntity> => {
-//     const [author] = await Promise.all([getAuthorById(id), thunkApi.dispatch(fetchCategories)]);
-//     const videos = extractVideoEntitiesFromResponse(author);
-//     thunkApi.dispatch(videosReceived(videos));
-//     return transformAuthorResponseToEntity(author);
-//   }
-// );
-
 export const saveVideoToAuthor = createAsyncThunk(
   'authors/saveVideo',
-  async (video: VideoEntity, thunkApi): Promise<AuthorEntity[] | undefined> => {
+  async (updates: { video: VideoEntity; originalVideo?: VideoEntity }, thunkApi): Promise<AuthorEntity[] | undefined> => {
+    const { video, originalVideo } = updates;
     const { authorId, ...data } = video;
     const state = thunkApi.getState() as RootState;
     const authors = state.authors.entities;
@@ -95,18 +80,17 @@ export const saveVideoToAuthor = createAsyncThunk(
 
     if (!nextAuthor) return undefined;
 
-    const videos = videosSelector.selectEntities(state);
+    const videos = state.videos.entities;
     const authorPayload = transformAuthorEntityToResponse(nextAuthor, videos);
-    const selectedVideo = videos[video.id];
 
-    const videoPayload = selectedVideo && transformVideoEntityToResponse({ ...selectedVideo, ...data });
-    const isAuthorChanged = selectedVideo && selectedVideo.authorId !== nextAuthor.id;
-    const previousAuthor = isAuthorChanged && selectedVideo && authors[selectedVideo.authorId];
+    const videoPayload = originalVideo && transformVideoEntityToResponse({ ...originalVideo, ...data });
+    const isAuthorChanged = originalVideo && originalVideo.authorId !== nextAuthor.id;
+    const previousAuthor = isAuthorChanged && originalVideo && authors[originalVideo.authorId];
     const authorToRemoveVideo = previousAuthor && transformAuthorEntityToResponse(previousAuthor, videos);
 
     const requests: AuthorResponse[] = [];
-    if (authorToRemoveVideo && selectedVideo && videoPayload) {
-      requests.push(removeVideoToAuthorResponse(authorToRemoveVideo, selectedVideo.id));
+    if (authorToRemoveVideo && originalVideo && videoPayload) {
+      requests.push(removeVideoToAuthorResponse(authorToRemoveVideo, originalVideo.id));
       requests.push(addVideoToAuthorResponse(authorPayload, videoPayload));
     }
 
@@ -114,25 +98,9 @@ export const saveVideoToAuthor = createAsyncThunk(
       requests.push(updateVideoToAuthorResponse(authorPayload, videoPayload));
     }
 
-    if (!selectedVideo) {
+    if (!originalVideo) {
       requests.push(addVideoToAuthorResponse(authorPayload, data));
     }
-
-    // if (selectedVideo) {
-    //   const videoPayload = transformVideoEntityToResponse({ ...selectedVideo, ...data });
-    //   if (selectedVideo.authorId !== nextAuthor.id) {
-    //     const previousAuthor = authors[selectedVideo.authorId];
-    //     if (previousAuthor) {
-    //       const authorToRemoveVideo = transformAuthorEntityToResponse(previousAuthor, videos);
-    //       requests.push(removeVideoToAuthorResponse(authorToRemoveVideo, selectedVideo.id));
-    //       requests.push(addVideoToAuthorResponse(authorPayload, videoPayload));
-    //     }
-    //   } else {
-    //     requests.push(updateVideoToAuthorResponse(authorPayload, videoPayload));
-    //   }
-    // } else {
-    //   requests.push(addVideoToAuthorResponse(authorPayload, data));
-    // }
 
     const results = await Promise.all(requests.map(updateAuthor));
 
@@ -188,16 +156,6 @@ export const authorsSlice = createSlice({
     builder.addCase(fetchAuthors.pending, (state) => {
       state.isUpdating = true;
     });
-    // builder.addCase(fetchAuthorById.fulfilled, (state, action) => {
-    //   const author = action.payload;
-    //   if (author) {
-    //     authorsAdapter.upsertOne(state, author);
-    //   }
-    //   state.isUpdating = false;
-    // });
-    // builder.addCase(fetchAuthorById.pending, (state) => {
-    //   state.isUpdating = true;
-    // });
     builder.addCase(saveVideoToAuthor.fulfilled, (state, action) => {
       const authors = action.payload;
       if (authors) {

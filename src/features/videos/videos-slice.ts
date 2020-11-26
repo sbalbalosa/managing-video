@@ -1,8 +1,8 @@
 import { createSlice, createEntityAdapter, createAsyncThunk, Dictionary } from '@reduxjs/toolkit';
 
 import { RootState } from '../../store';
-import { categoriesSelector, fetchCategories } from '../categories/categoriesSlice';
-import { authorsSelector, fetchAuthors, saveVideoToAuthor, fetchAuthorsBySearch } from '../authors/authorsSlice';
+import { categoriesSelector, fetchCategories } from '../categories/categories-slice';
+import { authorsSelector, fetchAuthors, saveVideoToAuthor, fetchAuthorsBySearch } from '../authors/authors-slice';
 import { VideoEntity, VideoView, transformVideoEntityToView } from '../../models/video';
 
 const videosAdapter = createEntityAdapter<VideoEntity>({
@@ -27,7 +27,13 @@ export const fetchVideoBySearch = createAsyncThunk(
 export const saveVideo = createAsyncThunk(
   'videos/save',
   async (video: VideoEntity, thunkApi): Promise<void> => {
-    await thunkApi.dispatch(saveVideoToAuthor(video));
+    const state = thunkApi.getState() as RootState;
+    const originalVideo = state.videos.entities[video.id];
+    const payload = {
+      video,
+      originalVideo,
+    };
+    await thunkApi.dispatch(saveVideoToAuthor(payload));
     return;
   }
 );
@@ -53,18 +59,6 @@ export const { videosReceived, videoUpsertMany, videoDelete, videosRemoveAll } =
 export const videosSelector = videosAdapter.getSelectors<RootState>((state) => state.videos);
 
 export const videosLookup = (state: RootState): Dictionary<VideoEntity> => videosSelector.selectEntities(state);
-
-// const sorter = {
-//   name: (a: VideoView, b: VideoView) => a.name.localeCompare(b.name),
-//   author: (a: VideoView, b: VideoView) => a.author.name.localeCompare(b.author.name),
-// };
-
-// export const videosSortedBy = (state: RootState): VideoEntity[] => {
-//   //   const sorterFn = {
-//   //   name: (a, b) => records.sort((a, b) => )
-//   //   author: (a, b) => a.name.localeCompare(b.name),
-//   // };
-// };
 
 export const allVideos = (state: RootState): VideoView[] => {
   const entities = videosSelector.selectAll(state);
